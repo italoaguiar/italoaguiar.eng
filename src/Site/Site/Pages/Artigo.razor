@@ -1,0 +1,76 @@
+﻿@page "/blog/{Id}"
+
+
+@inject IJSRuntime JSRuntime
+@inject FirebaseClient Database
+
+<div class="pageHeader" style="background-image: url(@Article?.Image)">
+    <div class="pageHeaderOverlay">
+        <div class="container">
+            <h1 class="pageTitle">
+                Blog
+            </h1>
+        </div>
+    </div>
+</div>
+
+<div class="container content">
+    <div class="row">
+        <div class="col-md-9">
+
+            <h1>@Article?.Title</h1>
+
+            <h4>@Article?.SubTitle</h4>
+            <div class="ms-Persona ms-Persona--sm">
+                <div class="ms-Persona-imageArea">
+                    <img class="ms-Persona-image" src="@Article?.Author?.PictureUrl">
+                </div>
+                <div class="ms-Persona-details">
+                    <div class="ms-Persona-primaryText">@Article?.Author?.Name</div>
+                    <div class="ms-Persona-secondaryText">@Article?.Date.ToString("dd/MM/yyyy à\\s hh:mm")</div>
+                </div>
+            </div>
+
+            <hr />
+
+            @((MarkupString)Article?.Html)
+
+
+            <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+            <br />
+
+            <div id="disqus_thread"></div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    public Article Article { get; set; }
+
+    protected async override void OnInitialized()
+    {
+        if (Article != null)
+        {
+            Id = Article.Url;
+        }
+        else
+        {
+            var result = await Database.Child("articles").OrderBy("Url").EqualTo(Id).OnceAsync<Article>();
+
+            if (result?.Count > 0)
+                Article = result.ElementAt(0).Object;
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await JSRuntime.InvokeVoidAsync("setDisqus");
+    }
+}

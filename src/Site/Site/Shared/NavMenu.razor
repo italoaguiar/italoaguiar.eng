@@ -1,0 +1,52 @@
+﻿
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Site</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <header>
+        <span class="d-flex justify-content-center">
+            <img class="img-cicle avatar-img" src="https://firebasestorage.googleapis.com/v0/b/sitepessoal-70bcd.appspot.com/o/pp.jpg?alt=media&token=58b0889b-c034-4672-b945-dd5edcfaea04" />
+        </span>
+        <div class="side-label">
+            <h3>Ítalo A. Aguiar</h3>
+            <span>Engenheiro, desenvolvedor e um grande sonhador!</span>
+        </div>
+    </header>
+    <ul class="nav flex-column">
+        <li class="d-flex justify-content-center">
+            <NavLink class="side-link" href="" Match="NavLinkMatch.All">
+                Home
+            </NavLink>
+        </li>
+        <li class="d-flex justify-content-center">
+            <NavLink class="side-link" href="blog">
+                Blog
+            </NavLink>
+        </li>
+        <li class="d-flex justify-content-center">
+            <NavLink class="side-link" href="counter">
+                Counter
+            </NavLink>
+        </li>
+        <li class="d-flex justify-content-center">
+            <NavLink class="side-link" href="fetchdata">
+                Fetch data
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

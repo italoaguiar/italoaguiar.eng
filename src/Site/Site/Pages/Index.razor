@@ -1,0 +1,56 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime;
+
+<div class="pageHeader">
+    <div class="container">
+        <h1 class="pageTitle">
+            Blog
+        </h1>
+    </div>
+</div>
+
+<div class="container content">
+    <div class="row">
+        <div class="col-md-9">
+
+            <h1>Hello, world!</h1>
+
+            <h4>loren ipsun dolor sit amet consectetur...</h4>
+            <div class="ms-Persona ms-Persona--sm">
+                <div class="ms-Persona-imageArea">
+                    <img class="ms-Persona-image" src="https://firebasestorage.googleapis.com/v0/b/sitepessoal-70bcd.appspot.com/o/pp.jpg?alt=media&token=58b0889b-c034-4672-b945-dd5edcfaea04">
+                </div>
+                <div class="ms-Persona-details">
+                    <div class="ms-Persona-primaryText">Ítalo A. Aguiar</div>
+                    <div class="ms-Persona-secondaryText">21/03/2019 às 18:30</div>
+                </div>
+            </div>
+
+            <hr />
+
+            Callouts are a powerful way to simplify a user interface. They host tips and other information users need when they need it, with minimal effort on their part. Callouts can help you use screen space more effectively and reduce screen clutter. However, poorly designed Callouts can be annoying, distracting, unhelpful, overwhelming, or in the way.
+
+            Use a Callout for displaying additional contextual information about an item on the screen. Unlike Tooltips, Callouts also have a tail that identifies their source. A common use for Callout is the introduction of a new feature or capability of an app or site. Alternate usages include pairing the Callout with a button or clickable element for on-demand presentation of additional or supporting content.
+
+            Real-world examples of this implementation can be seen in administrative interfaces where a particularly difficult-to-understand concept is paired with the ms-Icon--info "i" icon. In this example, Callout - with its tip text - is opened when the user clicks on or hovers over the icon.
+
+            <SurveyPrompt Title="How is Blazor working for you?" />
+
+            <a href="/blog/maslab">ir para maslab</a>
+            <br />
+
+            <div id="disqus_thread"></div>
+
+        </div>
+    </div>
+</div>
+
+@code{ 
+    protected async override void OnInitialized()
+    {
+        await JSRuntime.InvokeVoidAsync("setDisqus");
+    }
+}
+
+
+

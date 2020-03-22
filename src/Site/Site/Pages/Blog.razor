@@ -1,0 +1,108 @@
+﻿@page "/blog"
+
+@inject FirebaseClient Database
+
+<div class="pageHeader">
+    <div class="container">
+        <h1 class="pageTitle">
+            Blog
+        </h1>
+    </div>
+</div>
+
+<div class="container content">
+    <div class="row">
+        <div class="col-md-9">
+            <ul class="ms-List">
+                @foreach (Article article in Articles)
+                {
+                <li class="ms-ListItem" style="padding:0px 5px 5px 0px;">                    
+                    <div class="ms-ListItem-image" style="width:150px;">
+                        <img src="@article.Image" style="width:150px;"/>
+                    </div>
+                    <span class="ms-ListItem-primaryText">@article.Title</span>
+                    <span class="ms-ListItem-secondaryText">@article.SubTitle</span>
+                    <span class="ms-ListItem-tertiaryText">@Left(StripHTML(article.Html), 100)</span>
+                    <a class="stretched-link decoration-none" href="blog/@article.Url"></a>
+                </li>
+                }
+            </ul>
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-3">
+                    <button class="ms-Button" @onclick="Prev">
+                        <span class="ms-Button-label">Posts Antigos</span>
+                    </button>
+                </div>
+                <div class="col-6"></div>
+                <div class="col-3">
+                    <button class="ms-Button" @onclick="Next">
+                        <span class="ms-Button-label">Posts Recentes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    IEnumerable<Article> Articles { get; set; } = new Article[] { };
+    IEnumerable<Article> ServerResponse { get; set; }
+
+    int skip = 20;
+    int start = 0;
+    int end = 20;
+
+    private async void Next()
+    {
+        start += skip;
+        end += skip;
+
+        Articles = ServerResponse.Skip(start).Take(end);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Prev()
+    {
+        start -= skip;
+        end -= skip;
+
+        if (start < 0)
+            start = 0;
+        if (end < skip)
+            end = skip;
+
+        Articles = ServerResponse.Skip(start).Take(end);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string Left(string val, int len)
+    {
+        int min = Math.Min(val.Length, len);
+
+        return $"{val.Substring(0, min)}...";
+    }
+
+    private string StripHTML(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "<.*?>", String.Empty);
+    }
+
+    private async void LoadItens()
+    {
+        var result = await Database.Child("articles").OrderBy("IsActive").EqualTo(true).OnceAsync<Article>();
+
+        ServerResponse = result.Select(x => x.Object);
+
+        Articles = ServerResponse.Skip(start).Take(end);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadItens();
+    }
+}
